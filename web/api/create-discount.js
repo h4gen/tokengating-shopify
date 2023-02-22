@@ -1,6 +1,6 @@
 import { myAppMetafieldNamespace } from "./constants.js";
 
-const YOUR_FUNCTION_ID = "YOUR_FUNCTION_ID";
+const YOUR_FUNCTION_ID = "01GSSVKHB6M5GVFPQM5KKBGSS5";
 console.log(`Loaded function id ${YOUR_FUNCTION_ID}`);
 
 if (YOUR_FUNCTION_ID == "YOUR_FUNCTION_ID") {
@@ -68,9 +68,9 @@ export const createAutomaticDiscount = async (client, gateConfiguration) => {
                 key: "gate_configuration_id",
                 namespace: myAppMetafieldNamespace,
                 type: "single_line_text_field",
-                value: gateConfiguration.id
-              }
-            ]
+                value: gateConfiguration.id,
+              },
+            ],
           },
         },
       },
@@ -89,8 +89,7 @@ const noMatchingFunction = async (client, gateConfiguration) => {
   for (const node of response.body.data.automaticDiscountNodes.nodes) {
     const functionId = node.discount.automaticDiscount.functionId;
     const gateConfigurationId = node.metafield.value;
-    if (YOUR_FUNCTION_ID == functionId &&
-        gateConfiguration.id == gateConfigurationId) return false;
+    if (YOUR_FUNCTION_ID == functionId && gateConfiguration.id == gateConfigurationId) return false;
   }
 
   return true;

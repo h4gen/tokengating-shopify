@@ -1,42 +1,39 @@
 import { useMemo, useState, useCallback } from "react";
-import {
-  getGateContextClient,
-} from "@shopify/gate-context-client";
+import { getGateContextClient } from "@shopify/gate-context-client";
 
 // Set this to the ngrok url that is generated when you run the server
-export const host = "YOUR_NGROK_URL";
+export const host = "https://9e18-2a02-8109-9c80-3cf0-c552-c6e8-7eb0-fbde.eu.ngrok.io";
 
-if (host == "YOUR_NGROK_URL") {
-  console.error(`
-    ************************************************************
-    You must set the host to your ngrok url in useEvaluateGate.js.
-    Run \`npm run dev\` and replace the YOUR_NGROK_URL with the url found in the terminal
-    ************************************************************
-  `);
-}
+// if (host == "YOUR_NGROK_URL") {
+//   console.error(`
+//     ************************************************************
+//     You must set the host to your ngrok url in useEvaluateGate.js.
+//     Run \`npm run dev\` and replace the YOUR_NGROK_URL with the url found in the terminal
+//     ************************************************************
+//   `);
+// }
 
-const gateContextClient =
-  getGateContextClient({
-    backingStore: "ajaxApi",
-    shopifyGateContextGenerator: async (data) => {
-      try {
-        const existing = await gateContextClient.read();
-        return mergeGateContext(existing, data);
-      } catch(e) {
-        return data;
-      }
+const gateContextClient = getGateContextClient({
+  backingStore: "ajaxApi",
+  shopifyGateContextGenerator: async (data) => {
+    try {
+      const existing = await gateContextClient.read();
+      return mergeGateContext(existing, data);
+    } catch (e) {
+      return data;
+    }
 
-      // merges existing gate context entries
-      function mergeGateContext(existing, add) {
-        const entriesById = existing.reduce((acc, item) => {
-          acc[item.id] = item;
-          return acc;
-        }, {});
-        add.forEach(item => entriesById[item.id] = item);
-        return Object.keys(entriesById).map(id => entriesById[id]);
-      }
-    },
-  });
+    // merges existing gate context entries
+    function mergeGateContext(existing, add) {
+      const entriesById = existing.reduce((acc, item) => {
+        acc[item.id] = item;
+        return acc;
+      }, {});
+      add.forEach((item) => (entriesById[item.id] = item));
+      return Object.keys(entriesById).map((id) => entriesById[id]);
+    }
+  },
+});
 
 export const useEvaluateGate = () => {
   const gate = getGate();
@@ -44,7 +41,7 @@ export const useEvaluateGate = () => {
   const productId = getProductId();
   const evaluateGate = useCallback(
     async ({ address, message, signature }) => {
-      const response = await fetch(`${host}/public/gateEvaluation`, {
+      const response = await fetch("/apps/narratic/public/gateEvaluation", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,22 +58,20 @@ export const useEvaluateGate = () => {
       });
       const json = await response.json();
       setGateEvaluation(json);
-      gateContextClient.write(json.gateContext)
-        .catch(e => console.error('Failed to write to gate context'));
-
+      gateContextClient.write(json.gateContext).catch((e) => console.error("Failed to write to gate context"));
     },
     [setGateEvaluation, gate]
   );
 
-  const {unlockingTokens, isLocked} = useMemo(() => {
-    const {unlockingTokens} = gateEvaluation || {};
+  const { unlockingTokens, isLocked } = useMemo(() => {
+    const { unlockingTokens } = gateEvaluation || {};
     const isLocked = !Boolean(unlockingTokens?.length);
 
     return {
       unlockingTokens,
       isLocked,
-    }
-  }, [gateEvaluation])
+    };
+  }, [gateEvaluation]);
 
   return {
     evaluateGate,
@@ -87,7 +82,7 @@ export const useEvaluateGate = () => {
 };
 
 // This function also present in App.jsx
-const getGate = () => window.myAppGates?.[0] || {}
+const getGate = () => window.myAppGates?.[0] || {};
 
 function getShopDomain() {
   return window.Shopify.shop;

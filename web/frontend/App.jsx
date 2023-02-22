@@ -1,12 +1,11 @@
 import { BrowserRouter } from "react-router-dom";
 import { NavigationMenu } from "@shopify/app-bridge-react";
 import Routes from "./Routes";
+// import { ConnectWalletProvider } from "@shopify/connect-wallet";
+// import { WagmiConfig } from "wagmi";
+// import { chains, client } from "./utils/connect-wallet-config";
 
-import {
-  AppBridgeProvider,
-  QueryProvider,
-  PolarisProvider,
-} from "./components";
+import { AppBridgeProvider, QueryProvider, PolarisProvider } from "./components";
 
 export default function App() {
   // Any .tsx or .jsx files in /pages will become a route

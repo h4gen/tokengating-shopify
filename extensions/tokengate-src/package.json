@@ -6,7 +6,8 @@
   "author": "Shopify Inc.",
   "license": "MIT",
   "scripts": {
-    "build": "vite build",
+    "build": "vite build --watch",
+    "dev": "vite --host",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
